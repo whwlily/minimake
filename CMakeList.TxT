@@ -1,0 +1,4 @@
+cmake_minimum_required(VERSION 3.10)
+project(main)
+set(SOURCES main.c basic.c)
+add_executable(main $(SOURCES))
