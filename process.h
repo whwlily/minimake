@@ -1,0 +1,1 @@
+void process_makefile(const char *filename, int verbose);
