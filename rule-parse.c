@@ -1,17 +1,13 @@
 #include "title.h"
-
+#include"map.h"
 #include <stdio.h>
 #include <string.h>
+#include"line.h"
+#include"time.h"
 
 struct Rule rules[MAX_RULES]; // 定义规则数组
 int rule_count = 0;           // 定义规则计数器
 
-
-// 检查文件是否存在
-bool file_exists(const char *filename) {
-    struct stat buffer;
-    return (stat(filename, &buffer) == 0);
-}
 
 // 解析规则函数
 void parse_rules(const char *filename) {
@@ -32,19 +28,29 @@ void parse_rules(const char *filename) {
         char *colon = strchr(line, ':');
         if (colon) {
             *colon = '\0';
-            strncpy(rules[rule_count].target, line, sizeof(rules[rule_count].target) - 1);
+            char target[256];
+            strncpy(target, line, sizeof(target) - 1);
+            target[sizeof(target) - 1] = '\0';
+
+            // 初始化规则
+            strncpy(rules[rule_count].target, target, sizeof(rules[rule_count].target) - 1);
             rules[rule_count].target[sizeof(rules[rule_count].target) - 1] = '\0';
+            rules[rule_count].dep_count = 0;
 
             // 解析依赖
             char *dependency = strtok(colon + 1, " \t\n");
-            rules[rule_count].dep_count = 0;
             while (dependency) {
-                strncpy(rules[rule_count].dependencies[rules[rule_count].dep_count], dependency, 32);
-                rules[rule_count].dep_count++;
+                if (rules[rule_count].dep_count < MAX_DEPENDENCIES) {
+                    strncpy(rules[rule_count].dependencies[rules[rule_count].dep_count], dependency, sizeof(rules[rule_count].dependencies[rules[rule_count].dep_count]) - 1);
+                    rules[rule_count].dependencies[rules[rule_count].dep_count][sizeof(rules[rule_count].dependencies[rules[rule_count].dep_count]) - 1] = '\0';
+                    rules[rule_count].dep_count++;
+                } else {
+                    printf("警告: 目标 '%s' 的依赖数量超过限制 (%d)\n", target, MAX_DEPENDENCIES);
+                }
                 dependency = strtok(NULL, " \t\n");
             }
 
-            // 读取命令
+            // 读取命令（如果有）
             if (fgets(line, sizeof(line), file)) {
                 strncpy(rules[rule_count].commands, line, sizeof(rules[rule_count].commands) - 1);
                 rules[rule_count].commands[sizeof(rules[rule_count].commands) - 1] = '\0';
