@@ -55,23 +55,40 @@ void check(const char *filename) {
 
         // 检查是否是规则定义（以冒号结尾的行）
         char *colon = strchr(line, ':');
-        if (colon && !isspace((unsigned char)line[0])) {
-            // 检查冒号前是否有空格
-            if (isspace((unsigned char)*(colon - 1))) {
-                printf("Line %d: 错误: 目标和依赖之间缺少冒号或存在多余空格 '%s'\n", line_number, line);
-                syntax_error_count++;
-            }
-            in_rule = true; // 进入规则部分
-        } else if (in_rule) {
+if (colon && !isspace((unsigned char)line[0])) {
+    // 检查冒号前是否有空格
+    if (isspace((unsigned char)*(colon - 1))) {
+        printf("Line %d: 错误: 目标和依赖之间缺少冒号或存在多余空格 '%s'\n", line_number, line);
+        syntax_error_count++;
+    }
+    // 移除对冒号后多余空格的警告
+    in_rule = true; // 进入规则部分
+} else if (in_rule) {
             // 如果在规则部分，检查命令行是否以制表符开头
             if (!is_command_line(line)) {
-                // 检查是否使用了 4 个空格而不是制表符
+                // 检查是否使用了 4 个空格代替制表符
                 if (strncmp(line, "    ", 4) == 0) {
-                    printf("Line %d: 错误: 命令使用了 4 个空格而不是制表符: '%s'\n", line_number, line);
-                } else {
-                    printf("Line %d: 警告: 命令未以制表符开头: '%s'\n", line_number, line);
+                    printf("Line %d: 错误: 命令使用了 4 个空格代替制表符: '%s'\n", line_number, line);
+                } 
+                // 检查是否以其他错误的缩进开头
+                else if (line[0] == ' ' || line[0] == '\t') {
+                    printf("Line %d: 错误: 命令行以混合空格和制表符开头: '%s'\n", line_number, line);
+                } 
+                // 检查是否完全未以制表符开头
+                else {
+                    printf("Line %d: 错误: 命令行未以制表符开头: '%s'\n", line_number, line);
                 }
                 syntax_error_count++;
+            } else {
+                // 检查制表符后是否有多余的空格
+                int i = 1;
+                while (line[i] == ' ') {
+                    i++;
+                }
+                if (i > 1) {
+                    printf("Line %d: 错误: 命令行中制表符后存在多余空格: '%s'\n", line_number, line);
+                    syntax_error_count++;
+                }
             }
         } else if (colon == NULL) {
             // 如果没有冒号且不在规则部分，报错

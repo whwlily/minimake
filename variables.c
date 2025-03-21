@@ -42,7 +42,6 @@ void parse_makefile_variables(const char *makefile_path) {
             char *name = strtok(line, " \t");
             char *value = strtok(equal_sign + 1, "\n");
             if (name && value) {
-                printf("解析变量: %s = %s\n", name, value); // 调试输出
                 setenv(name, value, 1); // 将变量存储到环境变量表
             }
         }

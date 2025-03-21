@@ -38,8 +38,7 @@ void replace_leading_spaces_with_tab(char *line) {
     }
 }
 
-int preprocess_makefile(bool verbose) {
-    const char *filename = "./Makefile";
+int preprocess_makefile(const char *filename, bool verbose) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("错误: 无法打开文件 '%s'\n", filename);
@@ -54,51 +53,28 @@ int preprocess_makefile(bool verbose) {
             fclose(file);
             return 1;
         }
+        printf("正在创建文件 'Minimake_claered.mk'...\n");
     }
 
     char line[1024];
-    bool in_rule = false; // 标记是否在规则部分
     while (fgets(line, sizeof(line), file)) {
         // 去除行尾空格
         trim_trailing_whitespace(line);
 
-        // 跳过空行
-        if (is_empty_line(line)) {
-            in_rule = false; // 空行结束规则部分
-            continue;
-        }
-
         // 去除注释
         remove_comment(line);
 
-        // 再次去除行尾空格
-        trim_trailing_whitespace(line);
-
-        // 跳过清理后的空行
-        if (is_empty_line(line)) {
-            in_rule = false; // 空行结束规则部分
-            continue;
-        }
-
-        // 检查是否是规则定义（以冒号结尾的行）
-        if (strchr(line, ':') && !isspace((unsigned char)line[0])) {
-            in_rule = true; // 进入规则部分
-        } else if (in_rule) {
-            // 如果在规则部分，处理命令行
-            replace_leading_spaces_with_tab(line);
-        }
-
-        // 在调试模式下输出清理后的行到 Minimake_claered.mk
+        // 写入输出文件（包括空行）
         if (verbose && output) {
             fprintf(output, "%s\n", line);
         }
     }
 
-    // 关闭文件
     fclose(file);
     if (verbose && output) {
         fclose(output);
+        printf("文件 'Minimake_claered.mk' 已成功生成并关闭。\n");
     }
 
-    return 0; // 确保函数返回值
+    return 0;
 }

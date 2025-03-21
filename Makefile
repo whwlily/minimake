@@ -66,11 +66,11 @@ clean:
 
 # 测试目标 app
 app: test.c utils.c
-	gcc -o app test.c utils.c
+	 gcc -o app test.c utils.c
 
 # 测试目标 app1
 app1: test.c utils.c
-	gcc -o app1 test.c utils.c
+gcc -o app1 test.c utils.c
 app1: test.c utils.c
 	gcc -o app1 test.c utils.c
 
