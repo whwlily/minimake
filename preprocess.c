@@ -30,10 +30,10 @@ void remove_comment(char *line) {
 void replace_leading_spaces_with_tab(char *line) {
     if (line[0] == ' ') {
         char *p = line;
-        while (*p == ' ') p++; // 跳过所有前导空格
+        while (*p == ' ') p++; 
         if (*p != '\0') {
-            memmove(line + 1, p, strlen(p) + 1); // 将内容向后移动
-            line[0] = '\t'; // 替换为制表符
+            memmove(line + 1, p, strlen(p) + 1); 
+            line[0] = '\t'; 
         }
     }
 }
@@ -58,13 +58,13 @@ int preprocess_makefile(const char *filename, bool verbose) {
 
     char line[1024];
     while (fgets(line, sizeof(line), file)) {
-        // 去除行尾空格
+        
         trim_trailing_whitespace(line);
 
-        // 去除注释
+        
         remove_comment(line);
 
-        // 写入输出文件（包括空行）
+        
         if (verbose && output) {
             fprintf(output, "%s\n", line);
         }

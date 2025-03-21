@@ -4,19 +4,19 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <stdbool.h> // 添加以支持布尔类型
+#include <stdbool.h> 
 
 
 #define MAX_TARGETS 100
 #define MAX_DEPENDENCIES 10
 
-bool show_graph = false; // 全局标志变量，默认为 false
+bool show_graph = false; 
 
 typedef struct {
     char target[256];
     char dependencies[MAX_DEPENDENCIES][256];
     int dependency_count;
-    int indegree; // 入度
+    int indegree; 
 } Node;
 
 Node graph[MAX_TARGETS];
@@ -83,7 +83,6 @@ void add_dependency(const char *target, const char *dependency) {
     // 更新依赖的入度
     graph[dependency_index].indegree++;
 
-    // 仅在 show_graph 为 true 时打印依赖信息
     if (show_graph) {
         printf("添加依赖: %s -> %s\n", target, dependency);
     }
@@ -99,7 +98,6 @@ void print_graph() {
 
         printf("目标: %s, 入度: %d, 依赖: ", graph[i].target, graph[i].indegree);
         for (int j = 0; j < graph[i].dependency_count; j++) {
-            // 跳过与 minimake 相关的依赖
             if (strcmp(graph[i].dependencies[j], "minimake") == 0) {
                 continue;
             }

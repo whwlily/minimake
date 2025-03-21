@@ -12,7 +12,7 @@ time_t get_file_mod_time(const char *filename) {
     if (stat(filename, &buffer) == 0) {
         return buffer.st_mtime;
     }
-    return -1; // 返回 -1 表示文件不存在或无法获取修改时间
+    return -1; 
 }
 
 // 检查目标是否重复定义
@@ -30,7 +30,7 @@ bool is_duplicate_target(const char *target) {
 void timecheck(const char *target) {
     for (int i = 0; i < rule_count; i++) {
         if (target != NULL && strcmp(rules[i].target, target) != 0) {
-            continue; // 如果指定了目标，只处理指定目标
+            continue; 
         }
 
         // 检查目标是否重复定义
@@ -63,7 +63,7 @@ void timecheck(const char *target) {
             // 如果所有依赖文件都存在，则构建目标
             printf("所有依赖文件均存在，开始构建目标 '%s'...\n", rules[i].target);
             if (strlen(rules[i].commands) > 0) {
-                system(rules[i].commands); // 执行构建命令
+                system(rules[i].commands);
             } else {
                 printf("错误: 目标 '%s' 没有构建命令。\n", rules[i].target);
             }
@@ -85,7 +85,7 @@ void timecheck(const char *target) {
             if (needs_rebuild) {
                 printf("开始重新构建目标 '%s'...\n", rules[i].target);
                 if (strlen(rules[i].commands) > 0) {
-                    system(rules[i].commands); // 执行构建命令
+                    system(rules[i].commands); 
                 } else {
                     printf("错误: 目标 '%s' 没有构建命令。\n", rules[i].target);
                 }

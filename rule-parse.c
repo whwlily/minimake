@@ -19,7 +19,6 @@ void parse_rules(const char *filename) {
 
     char line[256];
     while (fgets(line, sizeof(line), file)) {
-        // 忽略空行或注释行
         if (line[0] == '\n' || line[0] == '#') {
             continue;
         }
@@ -50,7 +49,7 @@ void parse_rules(const char *filename) {
                 dependency = strtok(NULL, " \t\n");
             }
 
-            // 读取命令（如果有）
+          
             if (fgets(line, sizeof(line), file)) {
                 strncpy(rules[rule_count].commands, line, sizeof(rules[rule_count].commands) - 1);
                 rules[rule_count].commands[sizeof(rules[rule_count].commands) - 1] = '\0';
@@ -72,7 +71,6 @@ int validate_rules(const char *target) {
 
     // 检查是否有重复的目标
     for (int i = 0; i < rule_count; i++) {
-        // 如果指定了目标且当前目标不匹配，则跳过
         if (target != NULL && strcmp(rules[i].target, target) != 0) {
             continue;
         }
@@ -87,7 +85,6 @@ int validate_rules(const char *target) {
 
     // 检查依赖是否有效
     for (int i = 0; i < rule_count; i++) {
-        // 如果指定了目标且当前目标不匹配，则跳过
         if (target != NULL && strcmp(rules[i].target, target) != 0) {
             continue;
         }
@@ -96,12 +93,12 @@ int validate_rules(const char *target) {
             const char *dependency = rules[i].dependencies[j];
             bool valid = false;
 
-            // 检查依赖是否是文件
+          
             if (file_exists(dependency)) {
                 valid = true;
             }
 
-            // 检查依赖是否是其他目标
+           
             for (int k = 0; k < rule_count; k++) {
                 if (strcmp(rules[k].target, dependency) == 0) {
                     valid = true;
@@ -116,5 +113,5 @@ int validate_rules(const char *target) {
         }
     }
 
-    return error_count > 0 ? 1 : 0; // 如果有错误，返回 1；否则返回 0
+    return error_count > 0 ? 1 : 0; 
 }
