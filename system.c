@@ -4,7 +4,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-// 自定义 system 函数
 int my_system(const char *command) {
     if (command == NULL) {
         fprintf(stderr, "Command is NULL.\n");
